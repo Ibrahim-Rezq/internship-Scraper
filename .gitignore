@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+output/
+persisted_config.json
+.DS_Store

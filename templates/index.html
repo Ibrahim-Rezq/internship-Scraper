@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internship Scraper UI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:#000;color:#fff;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:48px 24px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;gap:12px}
+.hdr-l h1{font-size:1.25rem;font-weight:700;letter-spacing:-.01em;margin:0}
+.hdr-l .by{color:#444;font-size:.82rem;margin-top:2px}
+.hdr-l .by a{color:#666;text-decoration:none}
+.hdr-l .by a:hover{color:#fff}
+.hdr-r{display:flex;gap:6px;flex-shrink:0}
+.btns{display:flex;gap:6px}
+.btns button,.hdr-r button{padding:6px 12px;border:1px solid #222;border-radius:6px;background:transparent;color:#555;font-size:.78rem;cursor:pointer;transition:.15s;white-space:nowrap}
+.btns button:hover,.hdr-r button:hover{color:#ccc;border-color:#444}
+.sec{margin-bottom:24px}
+.lbl{font-size:.72rem;font-weight:600;color:#444;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.inp{width:100%;padding:10px 14px;font-size:.88rem;background:#111;color:#fff;border:1px solid #222;border-radius:8px;outline:none;transition:.15s}
+.inp:focus{border-color:#555}
+.inp::placeholder{color:#333}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;min-height:28px}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#111;border:1px solid #222;border-radius:6px;font-size:.8rem;color:#ccc}
+.tag .rm{cursor:pointer;color:#555;font-size:1rem;line-height:1}
+.tag .rm:hover{color:#fff}
+.gr2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.srcs{display:flex;gap:6px;flex-wrap:wrap}
+.src{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid #222;border-radius:8px;background:transparent;cursor:pointer;font-size:.82rem;color:#555;transition:.15s;user-select:none}
+.src:hover{border-color:#444;color:#aaa}
+.src.on{color:#fff;border-color:#555;background:#111}
+.src .ck{display:inline-block;width:14px;height:14px;border:1.5px solid #333;border-radius:4px;transition:.15s}
+.src.on .ck{background:#fff;border-color:#fff}
+.opt{display:flex;gap:12px;flex-wrap:wrap}
+.opt .inp{width:auto;flex:1;min-width:100px}
+.btn-p{display:block;width:100%;padding:12px 24px;font-size:.9rem;font-weight:600;background:#fff;color:#000;border:none;border-radius:10px;cursor:pointer;transition:.15s;margin-top:4px}
+.btn-p:hover{opacity:.85}
+.btn-p:disabled{opacity:.3;cursor:not-allowed}
+.btn-p .sp{display:none;width:16px;height:16px;border:2px solid #000;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto}
+.btn-p.loading .sp{display:block}
+.btn-p.loading .tx{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.log{display:none;margin-top:20px;background:#0a0a0a;border:1px solid #141414;border-radius:10px;padding:16px;max-height:320px;overflow-y:auto}
+.log.show{display:block}
+.log::-webkit-scrollbar{width:4px}
+.log::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
+.ent{font-size:.82rem;color:#666;padding:3px 0;line-height:1.5}
+.ent b{color:#ccc;font-weight:500}
+.ent.ok{color:#4ade80}
+.ent.err{color:#f87171}
+.ent.sk{color:#555;font-style:italic}
+.rs{display:none;margin-top:24px;padding:20px;border:1px solid #1a1a1a;border-radius:10px}
+.rs.show{display:block}
+.rs .tt{font-size:.85rem;color:#666;margin-bottom:12px}
+.rs .tt b{color:#fff;font-weight:600}
+.rs .ls{display:flex;gap:10px;flex-wrap:wrap}
+.rs .ls a{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border:1px solid #222;border-radius:8px;color:#fff;text-decoration:none;font-size:.85rem;font-weight:500;transition:.15s}
+.rs .ls a:hover{background:#111;border-color:#444}
+.ftr{margin-top:48px;padding-top:20px;border-top:1px solid #141414;text-align:center;font-size:.8rem;color:#444}
+.ftr a{color:#888;text-decoration:none}
+.ftr a:hover{color:#fff}
+@media(max-width:550px){
+.wrap{padding:32px 16px}
+.hdr{flex-direction:column;margin-bottom:28px}
+.gr2{grid-template-columns:1fr}
+.opt{gap:8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hdr">
+<div class="hdr-l">
+<h1>Internship Scraper</h1>
+<div class="by"><a href="https://mezoinnit.github.io" target="_blank" rel="noopener">Moataz Ahmed</a></div>
+</div>
+<div class="hdr-r">
+<button onclick="ld()">Load Defaults</button>
+</div>
+</div>
+
+<div class="sec">
+<div class="lbl">Keywords</div>
+<input class="inp" id="kwInp" placeholder="Type and press Enter" autocomplete="off">
+<div class="tags" id="kwTags"></div>
+</div>
+
+<div class="sec">
+<div class="lbl">Filters</div>
+<div class="gr2">
+<div>
+<input class="inp" id="exInp" placeholder="Exclude titles" autocomplete="off">
+<div class="tags" id="exTags"></div>
+</div>
+<div>
+<input class="inp" id="inInp" placeholder="Include titles" autocomplete="off">
+<div class="tags" id="inTags"></div>
+</div>
+</div>
+</div>
+
+<div class="sec">
+<div class="lbl">Target Cities</div>
+<input class="inp" id="ciInp" placeholder="Type a city and press Enter" autocomplete="off">
+<div class="tags" id="ciTags"></div>
+</div>
+
+<div class="sec">
+<div class="lbl">Sources</div>
+<div class="srcs" id="srcs"></div>
+</div>
+
+<div class="sec">
+<div class="lbl">Options</div>
+<div class="opt">
+<input class="inp" id="locInp" placeholder="Location">
+<select class="inp" id="daysSel">
+<option value="1">1 day</option>
+<option value="7">7 days</option>
+<option value="14">14 days</option>
+<option value="30">30 days</option>
+</select>
+<select class="inp" id="expSel">
+<option value="">Any level</option>
+<option value="1">Internship</option>
+<option value="2">Entry level</option>
+<option value="3">Associate</option>
+</select>
+</div>
+</div>
+
+<button class="btn-p" id="runBtn" onclick="run()">
+<span class="tx">Run Scraper</span>
+<span class="sp"></span>
+</button>
+
+<div class="log" id="log"></div>
+<div class="rs" id="rs">
+<div class="tt" id="rsInfo"></div>
+<div class="ls" id="rsLinks"></div>
+</div>
+
+<div class="ftr">
+Built by <a href="https://mezoinnit.github.io" target="_blank" rel="noopener">Moataz Ahmed</a>
+· &copy; 2026 All rights reserved
+</div>
+</div>
+
+<script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function tagStore(key){return JSON.parse(localStorage.getItem(key)||'[]')}
+function tagSave(key,val){localStorage.setItem(key,JSON.stringify(val))}
+function tagRender(key,elId){
+var arr=tagStore(key)
+document.getElementById(elId).innerHTML=arr.map(function(v){return '<span class="tag">'+esc(v)+'<span class="rm" onclick="tagRm(\''+key+'\',\''+esc(v)+'\',\''+elId+'\')">&times;</span></span>'}).join('')
+}
+function tagAdd(key,val,elId){
+var arr=tagStore(key)
+if(val&&arr.indexOf(val)===-1){arr.push(val);tagSave(key,arr);tagRender(key,elId)}
+}
+function tagRm(key,val,elId){
+var arr=tagStore(key).filter(function(x){return x!==val})
+tagSave(key,arr)
+tagRender(key,elId)
+}
+function tagSetup(inpId,key,elId){
+var inp=document.getElementById(inpId)
+inp.addEventListener('keydown',function(e){
+if(e.key===','||e.key==='Enter'){
+e.preventDefault()
+var v=this.value.trim().replace(/,+$/,'').trim()
+tagAdd(key,v,elId)
+this.value=''
+}
+})
+inp.addEventListener('blur',function(){
+var v=this.value.trim()
+tagAdd(key,v,elId)
+this.value=''
+})
+}
+
+tagSetup('kwInp','kw','kwTags')
+tagSetup('exInp','ex','exTags')
+tagSetup('inInp','in_','inTags')
+tagSetup('ciInp','ci','ciTags')
+
+tagRender('kw','kwTags')
+tagRender('ex','exTags')
+tagRender('in_','inTags')
+tagRender('ci','ciTags')
+
+var srcKeys=['linkedin','indeed','wuzzuf','search_engine','company_pages']
+var srcLabels={linkedin:'LinkedIn',indeed:'Indeed',wuzzuf:'Wuzzuf',search_engine:'Search Engine',company_pages:'Company Pages'}
+var srcSt=JSON.parse(localStorage.getItem('srcSt')||'{}')
+
+function svSrc(){localStorage.setItem('srcSt',JSON.stringify(srcSt))}
+
+function renderSrcs(){
+var el=document.getElementById('srcs')
+el.innerHTML=srcKeys.map(function(k){
+var on=srcSt[k]!==false
+return '<div class="src'+(on?' on':'')+'" data-k="'+k+'" onclick="tgSrc(this,\''+k+'\')"><span class="ck"></span>'+srcLabels[k]+'</div>'
+}).join('')
+}
+function tgSrc(el,k){
+var on=el.classList.toggle('on')
+srcSt[k]=on
+svSrc()
+}
+renderSrcs()
+
+function sv(keys){
+keys.forEach(function(k){
+var el=document.getElementById(k)
+if(el){localStorage.setItem(k,el.value)}
+})
+}
+document.getElementById('locInp').addEventListener('change',function(){sv(['locInp','daysSel','expSel'])})
+document.getElementById('daysSel').addEventListener('change',function(){sv(['locInp','daysSel','expSel'])})
+document.getElementById('expSel').addEventListener('change',function(){sv(['locInp','daysSel','expSel'])})
+
+var loc=localStorage.getItem('locInp')||'Egypt'
+var days=localStorage.getItem('daysSel')||'7'
+var exp=localStorage.getItem('expSel')||''
+document.getElementById('locInp').value=loc
+document.getElementById('daysSel').value=days
+document.getElementById('expSel').value=exp
+
+function ld(){
+fetch('/api/defaults').then(function(r){return r.json()}).then(function(d){
+tagSave('kw',d.keywords);tagRender('kw','kwTags')
+tagSave('ex',d.exclude_titles);tagRender('ex','exTags')
+tagSave('in_',d.include_titles);tagRender('in_','inTags')
+tagSave('ci',d.target_cities);tagRender('ci','ciTags')
+document.getElementById('locInp').value=d.location
+document.getElementById('daysSel').value=String(d.days_posted)
+document.getElementById('expSel').value=''
+srcSt={}
+for(var k in d.sources){srcSt[k]=d.sources[k]}
+svSrc()
+renderSrcs()
+addLog('Defaults loaded from config.py','ok')
+})
+}
+
+function addLog(msg,cls){
+var el=document.getElementById('log')
+var d=document.createElement('div')
+d.className='ent'+(cls?' '+cls:'')
+d.innerHTML=msg
+el.appendChild(d)
+el.scrollTop=el.scrollHeight
+}
+
+function run(){
+var btn=document.getElementById('runBtn')
+if(btn.classList.contains('loading'))return
+
+var keys=tagStore('kw')
+if(keys.length===0){addLog('Enter at least one keyword.','err');return}
+
+btn.classList.add('loading')
+document.getElementById('log').innerHTML=''
+document.getElementById('log').classList.add('show')
+document.getElementById('rs').classList.remove('show')
+document.getElementById('rsLinks').innerHTML=''
+addLog('Starting scraper\u2026')
+
+var expVal=document.getElementById('expSel').value
+var experienceLevel=[]
+if(expVal){experienceLevel=[parseInt(expVal)]}
+
+fetch('/api/run',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+keywords:keys,
+exclude_titles:tagStore('ex'),
+include_titles:tagStore('in_'),
+target_cities:tagStore('ci'),
+sources:srcKeys.reduce(function(o,k){o[k]=srcSt[k]!==false;return o},{}),
+location:document.getElementById('locInp').value,
+days_posted:parseInt(document.getElementById('daysSel').value)
+})
+}).then(function(r){return r.json()}).then(function(data){
+var es=new EventSource('/api/stream/'+data.run_id)
+es.onmessage=function(e){
+if(e.data==='[DONE]'){es.close();btn.classList.remove('loading');return}
+var m=JSON.parse(e.data)
+var cls=''
+if(m.type==='phase_done'){cls='ok';addLog(m.source+': <b>'+m.count+'</b> results',cls)}
+else if(m.type==='phase_skip'){cls='sk';addLog(m.source+': skipped',cls)}
+else if(m.type==='phase_error'){cls='err';addLog(m.source+': ERROR \u2014 '+m.error,cls)}
+else if(m.type==='message'){addLog(m.text)}
+else if(m.type==='done'){
+addLog('Done \u2014 <b>'+m.total+'</b> results (<b>'+m.removed+'</b> removed) in <b>'+m.elapsed+'s</b>','ok')
+if(m.total>0){
+document.getElementById('rsInfo').innerHTML='<b>'+m.total+'</b> internships &middot; '+m.elapsed+'s'
+var jsonName=m.json_path.split('/').pop()
+var htmlName=m.html_path.split('/').pop()
+document.getElementById('rsLinks').innerHTML='<a href="/output/'+jsonName+'">JSON \u2197</a><a href="/output/'+htmlName+'">HTML Report \u2197</a>'
+document.getElementById('rs').classList.add('show')
+}
+}
+else if(m.type==='error'){cls='err';addLog('Error: '+m.text,cls)}
+else{addLog(JSON.stringify(m))}
+}
+es.onerror=function(){
+es.close()
+btn.classList.remove('loading')
+addLog('Connection lost.','err')
+}
+})
+}
+</script>
+</body>
+</html>
