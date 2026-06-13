@@ -154,10 +154,13 @@ def is_relevant(internship: Internship) -> bool:
         if exclude in title_lower or exclude in desc_lower or exclude in company_lower:
             return False
 
-    for include in INCLUDE_TITLES:
-        if include in search_scope:
-            return True
-    return False
+    if internship.source == "search":
+        for include in INCLUDE_TITLES:
+            if include in search_scope:
+                return True
+        return False
+
+    return True
 
 
 def is_egypt_location(internship: Internship) -> bool:
