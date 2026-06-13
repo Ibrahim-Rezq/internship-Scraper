@@ -150,7 +150,8 @@ h1{{font-size:1.35rem;font-weight:700;letter-spacing:-.01em;margin:0}}
 <div class="emp" id="emp">No results match your search.</div>
 <div class="ftr">
 Built by <a href="https://mezoinnit.github.io" target="_blank" rel="noopener">Moataz Ahmed</a>
-· © {now.year} All rights reserved
+&middot; <a href="https://github.com/Mezoinnit/internship-Scraper" target="_blank" rel="noopener">GitHub</a>
+&middot; &copy; {now.year} All rights reserved
 </div>
 </div>
 <script>
