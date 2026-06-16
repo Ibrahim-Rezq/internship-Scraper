@@ -1,6 +1,11 @@
 venv/
+.venv/
 __pycache__/
 *.pyc
 output/
+data/
+!data/keywords.json
+!data/titles.json
+!data/cities.json
 persisted_config.json
 .DS_Store
